@@ -65,12 +65,13 @@ def VersionedFastAPI(
             versioned_app.router.routes.append(route)
         parent_app.mount(prefix, versioned_app)
 
-        @parent_app.get(
-            f"{prefix}/openapi.json", name=semver, tags=["Versions"]
-        )
-        @parent_app.get(f"{prefix}/docs", name=semver, tags=["Documentations"])
-        def noop() -> None:
-            ...
+        if app.openapi_url:
+            @parent_app.get(
+                f"{prefix}/openapi.json", name=semver, tags=["Versions"]
+            )
+            @parent_app.get(f"{prefix}/docs", name=semver, tags=["Documentations"])
+            def noop() -> None:
+                ...
 
     if enable_latest:
         prefix = "/latest"
